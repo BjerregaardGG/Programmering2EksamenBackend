@@ -59,6 +59,35 @@ public class FireServiceImpl implements FireService {
     }
 
     @Override
+    public List<FireDTO> findClosedFires() {
+        List<FireModel> fires = fireRepository.findByStatus(FireStatus.CLOSED);
+
+        List<FireDTO> fireDtos = new ArrayList<>();
+        for (FireModel fire : fires) {
+            FireDTO dto = new FireDTO();
+            dto.setId(fire.getId());
+            dto.setLatitude(fire.getLatitude());
+            dto.setLongitude(fire.getLongitude());
+            dto.setStatus(fire.getStatus());
+            dto.setClosedAt(fire.getClosedAt());
+            dto.setReportedAt(fire.getReportedAt());
+
+
+            //Konverterer sirener til DTOs
+            List<SirenDTO> sirenDTOs = fire.getSirens()
+                    .stream()
+                    .map(this::convertToSirenDTO)
+                    .collect(Collectors.toList());
+
+            dto.setActivatedSirens(sirenDTOs);
+            fireDtos.add(dto);
+        }
+
+        return fireDtos;
+
+    }
+
+    @Override
     public void closeFire(int fireId) {
 
         FireModel fire = fireRepository.findById(fireId)
