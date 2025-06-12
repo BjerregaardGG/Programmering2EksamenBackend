@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sirens")
-@CrossOrigin("x")
+@CrossOrigin(origins = "http://localhost:63342")
 public class SirenController {
 
     private final SirenServiceImpl sirenService;
