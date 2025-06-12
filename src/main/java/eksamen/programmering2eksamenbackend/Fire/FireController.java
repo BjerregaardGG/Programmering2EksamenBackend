@@ -1,5 +1,7 @@
 package eksamen.programmering2eksamenbackend.Fire;
 
+import eksamen.programmering2eksamenbackend.Siren.SirenDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/fires")
-@CrossOrigin("x")
-
+@CrossOrigin(origins = "http://localhost:63342")
 public class FireController {
 
     private final FireServiceImpl fireService;
@@ -21,7 +22,7 @@ public class FireController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FireDTO>> getFires(){
+    public ResponseEntity<List<FireDTO>> getAllFires(){
         try {
             List<FireDTO> fires = fireService.findAllFires();
             return ResponseEntity.ok(fires);
@@ -30,13 +31,45 @@ public class FireController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
-    @PutMapping("/{id}/closure")
-    public ResponseEntity<FireDTO> closeFire(@PathVariable Long id){
-        return null;
+    @GetMapping("/status")
+    public ResponseEntity<List<FireDTO>> getActiveFires(){
+        try {
+            List<FireDTO> fires = fireService.findActiveFires();
+            return ResponseEntity.ok(fires);
 
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+   @PostMapping
+   public ResponseEntity<FireDTO> createFire(@RequestBody FireDTO fire) {
+       try {
+           FireDTO fireDTO = fireService.reportFire(fire.getLatitude(), fire.getLongitude());
+
+           return ResponseEntity.ok(fireDTO);
+
+       } catch (Exception e) {
+           e.printStackTrace();
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+       }
+   }
+
+
+
+   @PutMapping("/{id}/closure")
+   public ResponseEntity<Void> closeFire(@PathVariable int id){
+        try{
+            fireService.closeFire(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
+
+
 

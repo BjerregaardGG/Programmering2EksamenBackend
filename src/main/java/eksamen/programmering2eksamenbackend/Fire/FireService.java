@@ -12,9 +12,9 @@ public interface FireService {
     List<FireDTO> findActiveFires();
 
     // lukker en brand baseret på id
-    FireDTO closeFire(Long fireId);
+    void closeFire(int fireId);
 
     // rapporterer om en ny brand og starter sirener indenfor 10 kom
-    FireModel reportFire(double latitude, double longitude);
+    FireDTO reportFire(double latitude, double longitude);
 
 }

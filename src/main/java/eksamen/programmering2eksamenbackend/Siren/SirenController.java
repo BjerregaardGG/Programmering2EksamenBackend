@@ -1,5 +1,6 @@
 package eksamen.programmering2eksamenbackend.Siren;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sirens")
-@CrossOrigin("x")
+@CrossOrigin(origins = "http://localhost:63342")
 public class SirenController {
 
     private final SirenServiceImpl sirenService;
@@ -38,6 +39,7 @@ public class SirenController {
     @GetMapping("/{id}")
     public ResponseEntity<SirenDTO> getSirenById(@PathVariable int id) {
         SirenDTO siren;
+
         try {
             siren = sirenService.findSirenById(id);
             return ResponseEntity.ok(siren);
@@ -62,8 +64,18 @@ public class SirenController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SirenDTO> updateSiren (@PathVariable int id, @RequestBody SirenDTO sirenDTO){
-        return null;
+    public ResponseEntity<SirenDTO> updateSiren (@PathVariable int id, @RequestBody SirenDTO sirenDTO) {
+
+        if (id != sirenDTO.getId()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            SirenDTO updatedSiren = sirenService.updateSiren(id, sirenDTO);
+            return ResponseEntity.ok(updatedSiren);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -9,6 +9,6 @@ import java.util.List;
 public interface FireRepository extends JpaRepository<FireModel, Integer> {
 
     List<FireModel> findByStatus(FireStatus status);
-    List<FireModel> findByStatusOrderByReportedAtDesc(FireStatus status);
+
 
 }

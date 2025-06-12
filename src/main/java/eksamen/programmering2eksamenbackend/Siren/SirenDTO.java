@@ -15,13 +15,87 @@ public class SirenDTO {
 
     public SirenDTO(){}
 
-    public SirenDTO(int id, String name, double latitude, double longitude, SirenStatus status, boolean disabled, LocalDateTime lastActivated) {
+    public SirenDTO(int id, double latitude, String name, double longitude, SirenStatus status, boolean disabled, LocalDateTime lastActivated) {
         this.id = id;
+        this.latitude = latitude;
+        this.name = name;
+        this.longitude = longitude;
+        this.status = status;
+        this.disabled = disabled;
+        this.lastActivated = lastActivated;
+    }
+
+    public SirenDTO(SirenModel model) {
+        this.id = model.getId();
+        this.name = model.getName();
+        this.latitude = model.getLatitude();
+        this.longitude = model.getLongitude();
+        this.status = model.getStatus();
+        this.disabled = model.isDisabled();
+        this.lastActivated = model.getLastActivated();
+    }
+
+    public SirenDTO(String name, double latitude, double longitude, SirenStatus status, boolean disabled) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
         this.disabled = disabled;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public SirenStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SirenStatus status) {
+        this.status = status;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public LocalDateTime getLastActivated() {
+        return lastActivated;
+    }
+
+    public void setLastActivated(LocalDateTime lastActivated) {
         this.lastActivated = lastActivated;
     }
 }
