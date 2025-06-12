@@ -30,7 +30,7 @@ public class SirenModel {
 
     public SirenModel() {}
 
-    public SirenModel(String name, double latitude, double longitude) {
+    public SirenModel(String name, double latitude, double longitude, SirenStatus status, boolean disabled) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
