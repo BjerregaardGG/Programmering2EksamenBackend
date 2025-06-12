@@ -21,24 +21,20 @@ public class FireController {
         this.fireService = fireService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<FireDTO>> getAllFires(){
+    @GetMapping("")
+    public ResponseEntity<List<FireDTO>> getActiveFires(@RequestParam(required = false) String status){
         try {
-            List<FireDTO> fires = fireService.findAllFires();
+            List<FireDTO> fires;
+
+            if ("closed".equalsIgnoreCase(status)) {
+                fires = fireService.findClosedFires();
+            } else if ("active".equalsIgnoreCase(status) || status == null) {
+                fires = fireService.findActiveFires();
+            } else {
+                return ResponseEntity.badRequest().build(); // ukendt status
+            }
+
             return ResponseEntity.ok(fires);
-
-        }catch(Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @GetMapping("/status")
-    public ResponseEntity<List<FireDTO>> getActiveFires(){
-        try {
-            List<FireDTO> fires = fireService.findActiveFires();
-            return ResponseEntity.ok(fires);
-
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -50,8 +50,10 @@ class FireRepositoryIntegrationTest {
     void findByStatus() {
 
         List<FireModel> fireList = fireRepository.findByStatus(FireStatus.ACTIVE);
+        List<FireModel> fireList2 = fireRepository.findByStatus(FireStatus.CLOSED);
 
         assertEquals(2, fireList.size());
+        assertEquals(2, fireList2.size());
 
     }
 }
