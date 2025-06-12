@@ -5,6 +5,7 @@ import eksamen.programmering2eksamenbackend.Fire.FireRepository;
 import eksamen.programmering2eksamenbackend.Fire.FireStatus;
 import eksamen.programmering2eksamenbackend.Siren.SirenModel;
 import eksamen.programmering2eksamenbackend.Siren.SirenRepository;
+import eksamen.programmering2eksamenbackend.Siren.SirenServiceImpl;
 import eksamen.programmering2eksamenbackend.Siren.SirenStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,10 +21,12 @@ public class InitData implements CommandLineRunner {
     @Autowired
     private final SirenRepository sirenRepository;
     private final FireRepository fireRepository;
+    private final SirenServiceImpl sirenService;
 
-    public InitData(SirenRepository sirenRepository, FireRepository fireRepository) {
+    public InitData(SirenRepository sirenRepository, FireRepository fireRepository, SirenServiceImpl sirenService) {
         this.sirenRepository = sirenRepository;
         this.fireRepository = fireRepository;
+        this.sirenService = sirenService;
     }
 
 
@@ -62,12 +65,25 @@ public class InitData implements CommandLineRunner {
         fire2.setReportedAt(LocalDateTime.now().minusHours(1));
 
         // Relationen er dobbeltejet (bidirektionel)
-        fire2.setSirens(List.of(s3, s4, s5));
+        fire2.setSirens(List.of(s3, s4));
         s3.getFires().add(fire2);
         s4.getFires().add(fire2);
-        s5.getFires().add(fire2);
 
-        fireRepository.saveAll(List.of(fire1,fire2));
+        FireModel fire3 = new FireModel();
+        fire3.setLatitude(34.0500);
+        fire3.setLongitude(-118.5300);
+        fire3.setStatus(FireStatus.ACTIVE);
+        fire3.setReportedAt(LocalDateTime.now().minusHours(1));
+
+        // Relationen er dobbeltejet (bidirektionel)
+        fire3.setSirens(List.of(s8, s9));
+        s8.getFires().add(fire3);
+        s9.getFires().add(fire3);
+
+        fireRepository.saveAll(List.of(fire1,fire2,fire3));
+        sirenService.activateSirensForFire(fire1);
+        sirenService.activateSirensForFire(fire2);
+        sirenService.activateSirensForFire(fire3);
     }
 
 

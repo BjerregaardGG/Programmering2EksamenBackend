@@ -145,4 +145,13 @@ public class SirenServiceImpl implements SirenService {
         return false;
     }
 
+    // sætter sirene statussen baseseret på fire status
+    public void activateSirensForFire(FireModel fire) {
+        List<SirenModel> sirens = fire.getSirens();
+        for (SirenModel siren : sirens) {
+            siren.setStatus(SirenStatus.ALARM);
+        }
+        sirenRepository.saveAll(sirens);
+    }
+
 }
