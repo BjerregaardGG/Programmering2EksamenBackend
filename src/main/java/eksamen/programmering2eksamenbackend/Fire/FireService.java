@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface FireService {
 
-    // finder alle brande
-    List<FireDTO> findAllFires();
-
     // finder aktive brande
     List<FireDTO> findActiveFires();
+
+    // finder slukkede brande
+    List<FireDTO> findClosedFires();
 
     // lukker en brand baseret på id
     void closeFire(int fireId);
