@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "fires")
 public class FireModel {
 
     @Id
@@ -21,7 +20,9 @@ public class FireModel {
     private LocalDateTime reportedAt = LocalDateTime.now(); // Automatisk timestamp
     private LocalDateTime closedAt; // Hvornår blev branden lukket
 
-    private boolean closed = false; // Default til aktiv (false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FireStatus status = FireStatus.ACTIVE;
 
     @ManyToMany
     @JoinTable(
@@ -37,7 +38,7 @@ public class FireModel {
         this.latitude = latitude;
         this.longitude = longitude;
         this.reportedAt = LocalDateTime.now();
-        this.closed = false;
+        this.status = FireStatus.CLOSED;
     }
 
     public int getId() {
@@ -80,12 +81,12 @@ public class FireModel {
         this.closedAt = closedAt;
     }
 
-    public boolean isClosed() {
-        return closed;
+    public FireStatus getStatus() {
+        return status;
     }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    public void setStatus(FireStatus status) {
+        this.status = status;
     }
 
     public List<SirenModel> getSirens() {
