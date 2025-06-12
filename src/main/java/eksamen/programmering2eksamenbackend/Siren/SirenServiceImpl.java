@@ -120,31 +120,6 @@ public class SirenServiceImpl implements SirenService {
         sirenRepository.deleteById(id);
     }
 
-    @Override
-    public List<SirenDTO> findSirensWithinRadius(double latitude, double longitude, double radiusKm) {
-        return List.of();
-    }
-
-    @Override
-    public void activateSirens(List<SirenDTO> sirens) {
-
-    }
-
-    @Override
-    public void deactivateSirens(List<SirenDTO> sirens) {
-
-    }
-
-    @Override
-    public List<SirenDTO> findActiveSirens() {
-        return List.of();
-    }
-
-    @Override
-    public boolean canActivateSiren(int id) {
-        return false;
-    }
-
     // sætter sirene statussen baseseret på fire status
     public void activateSirensForFire(FireModel fire) {
         List<SirenModel> sirens = fire.getSirens();

@@ -5,6 +5,7 @@ import eksamen.programmering2eksamenbackend.Siren.SirenModel;
 import eksamen.programmering2eksamenbackend.Siren.SirenRepository;
 import eksamen.programmering2eksamenbackend.Siren.SirenStatus;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,43 +75,46 @@ public class FireServiceImpl implements FireService {
 
         fireRepository.save(fire);
 
-
     }
 
     @Override
+    @Transactional // automatisk opdatering
     public FireDTO reportFire(double latitude, double longitude) {
-        return null;
-    }
 
-
-    /*
-    public FireModel reportFire(double latitude, double longitude) {
         // 1. Opret brand
         FireModel fire = new FireModel(latitude, longitude);
-        fire = fireRepository.save(fire);
+        fire.setStatus(FireStatus.ACTIVE);
+        fire = fireRepository.save(fire); // får id
 
-        // 2. Find sirener inden for 10km
+        // 2. Find sirener inden for en radius af 10km med hjælpemetode
         List<SirenModel> nearbySirens = findSirensWithinRadius(latitude, longitude, 10.0);
 
-        // 3. Aktiver tilgængelige sirener
+        // 3. Find derefter sirener som ikke er disabled
         List<SirenModel> availableSirens = nearbySirens.stream()
-                .filter(s -> !s.isDisabled())
-                .collect(Collectors.toList());
+                .filter(s -> !s.isDisabled()) // kun aktive sirener
+                .peek(siren -> { // opdaterer hver hver siren med peek uden seperat loop
+                    siren.setStatus(SirenStatus.ALARM);
+                    siren.setLastActivated(LocalDateTime.now());
+                })
+                .collect(Collectors.toList()); // returnerer en liste
 
-        for (SirenModel siren : availableSirens) {
-            fire.addSiren(siren);
-            siren.activate();
+        // 5. opretter relationer hvis der er sirener (join tabel)
+        if(!availableSirens.isEmpty()) {
+            fire.getSirens().addAll(availableSirens);
         }
 
-        sirenRepository.saveAll(availableSirens);
-        return fireRepository.save(fire);
+        // 5. Gem alle ændringer
+        sirenRepository.saveAll(availableSirens);  // Batch-opdatering efter ændringer i peek
+        fire = fireRepository.save(fire);  // Opdater fire med relationer
+
+        return new FireDTO(fire);
+
     }
 
-     */
-
     private List<SirenModel> findSirensWithinRadius(double latitude, double longitude, double radiusKm) {
-        List<SirenModel> allSirens = sirenRepository.findByDisabledFalse();
+        List<SirenModel> allSirens = sirenRepository.findAll();
 
+        // udregner distance mellem fire og sirener og returnerer alle sirener indenfor afstanden
         return allSirens.stream()
                 .filter(siren -> calculateDistanceKM(latitude, longitude,
                         siren.getLatitude(),
@@ -118,8 +122,8 @@ public class FireServiceImpl implements FireService {
                 .collect(Collectors.toList());
     }
 
-    // HAVERSINE FORMULA - beregner afstand mellem to koordinater
-    private double calculateDistanceKM(double lat1, double lon1, double lat2, double lon2) {
+    // Hjælpemetode til at beregne afstand mellem to koordinater
+    double calculateDistanceKM(double lat1, double lon1, double lat2, double lon2) {
         double lat1Rad = Math.toRadians(lat1);
         double lon1Rad = Math.toRadians(lon1);
         double lat2Rad = Math.toRadians(lat2);
