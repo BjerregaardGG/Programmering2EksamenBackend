@@ -8,6 +8,7 @@ import java.util.List;
 @Repository
 public interface FireRepository extends JpaRepository<FireModel, Integer> {
 
+    // databasekald til at finde fire ud fra status
     List<FireModel> findByStatus(FireStatus status);
 
 

@@ -29,6 +29,7 @@ class SirenServiceImplTest {
 
     private List<SirenModel> sirenModelList = new ArrayList<>();
 
+    // dummy data
     @BeforeEach
     void setUp(){
 
@@ -40,7 +41,7 @@ class SirenServiceImplTest {
         sirenModelList.addAll(List.of(s1,s2,s3,s4));
     }
 
-
+    // tester om findAllSirens henter alle sirener
     @Test
     void findAllSirens() {
 
@@ -53,6 +54,7 @@ class SirenServiceImplTest {
 
     }
 
+    // tester om findSirenById() henter rigtig sirene baseret på ID
     @Test
     void findSirenById() {
         SirenModel expected = sirenModelList.get(0);
@@ -64,6 +66,7 @@ class SirenServiceImplTest {
         Mockito.verify(sirenRepository).findById(1);
     }
 
+    // tester om createSiren() opretter en sirene korrekt
     @Test
     void createSiren() {
 

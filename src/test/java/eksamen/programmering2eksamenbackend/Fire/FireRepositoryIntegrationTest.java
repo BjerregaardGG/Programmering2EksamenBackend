@@ -20,6 +20,7 @@ class FireRepositoryIntegrationTest {
 
     private List<FireModel> fires = new ArrayList<>();
 
+    // dummy data
     @BeforeEach
     public void setup() {
         fireRepository.deleteAll();
@@ -36,6 +37,7 @@ class FireRepositoryIntegrationTest {
 
     }
 
+    // tester om findAllFires() henter alle fires fra databasen
     @Test
     void findAllFires(){
 
@@ -46,6 +48,7 @@ class FireRepositoryIntegrationTest {
 
     }
 
+    // tester om findByStatus() henter baseret på den rigtige status i databasen
     @Test
     void findByStatus() {
 

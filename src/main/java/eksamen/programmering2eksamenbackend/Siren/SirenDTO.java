@@ -15,16 +15,6 @@ public class SirenDTO {
 
     public SirenDTO(){}
 
-    public SirenDTO(int id, double latitude, String name, double longitude, SirenStatus status, boolean disabled, LocalDateTime lastActivated) {
-        this.id = id;
-        this.latitude = latitude;
-        this.name = name;
-        this.longitude = longitude;
-        this.status = status;
-        this.disabled = disabled;
-        this.lastActivated = lastActivated;
-    }
-
     public SirenDTO(SirenModel model) {
         this.id = model.getId();
         this.name = model.getName();

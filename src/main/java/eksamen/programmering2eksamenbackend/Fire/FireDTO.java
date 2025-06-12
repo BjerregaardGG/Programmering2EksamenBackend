@@ -20,6 +20,7 @@ public class FireDTO {
 
     }
 
+    // konverterer et FireModel-objekt til et FireDTO-objekt
     public FireDTO(FireModel fire) {
         this.id = fire.getId();
         this.latitude = fire.getLatitude();
