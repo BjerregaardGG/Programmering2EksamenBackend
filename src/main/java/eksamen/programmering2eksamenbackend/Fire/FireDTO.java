@@ -4,6 +4,7 @@ import eksamen.programmering2eksamenbackend.Siren.SirenDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FireDTO {
 
@@ -17,6 +18,20 @@ public class FireDTO {
 
     public FireDTO(){
 
+    }
+
+    public FireDTO(FireModel fire) {
+        this.id = fire.getId();
+        this.latitude = fire.getLatitude();
+        this.longitude = fire.getLongitude();
+        this.reportedAt = fire.getReportedAt();
+        this.status = fire.getStatus();
+        this.closedAt = fire.getClosedAt();
+
+        // Konverterer listen af SirenModel til SirenDTO
+        this.activatedSirens = fire.getSirens().stream()
+                .map(SirenDTO::new)
+                .collect(Collectors.toList());
     }
 
     public FireDTO(int id, double latitude, double longitude, LocalDateTime reportedAt, FireStatus status, LocalDateTime closedAt, List<SirenDTO> activatedSirens) {
