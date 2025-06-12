@@ -1,6 +1,9 @@
 package eksamen.programmering2eksamenbackend.Fire;
 
+import eksamen.programmering2eksamenbackend.Siren.SirenDTO;
+import eksamen.programmering2eksamenbackend.Siren.SirenModel;
 import eksamen.programmering2eksamenbackend.Siren.SirenRepository;
+import eksamen.programmering2eksamenbackend.Siren.SirenStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,13 +31,17 @@ class FireServiceImplTest {
     @Mock
     FireRepository fireRepository;
 
+    @Mock
+    SirenRepository sirenRepository;
+
     private List<FireModel> fireModelList = new ArrayList<>();
     private List<FireModel> activeFires = new ArrayList<>();
+    private FireModel fire1 = new FireModel();
+    private SirenModel siren = new SirenModel();
 
     @BeforeEach
     void setUp(){
 
-        FireModel fire1 = new FireModel();
         fire1.setLatitude(34.0195);
         fire1.setLongitude(-118.4913);
         fire1.setReportedAt(LocalDateTime.now());
@@ -44,6 +52,9 @@ class FireServiceImplTest {
         fire2.setLongitude(-118.5300);
         fire2.setStatus(FireStatus.ACTIVE);
         fire2.setReportedAt(LocalDateTime.now().minusHours(1));
+
+        siren.setStatus(SirenStatus.ALARM);
+        fire1.setSirens(Arrays.asList(siren));
 
         fireModelList.add(fire1);
         fireModelList.add(fire2);
@@ -66,6 +77,20 @@ class FireServiceImplTest {
 
         Mockito.verify(fireRepository, times(1)).findByStatus(FireStatus.ACTIVE);
     }
+
+    @Test
+    public void closeFire(){
+
+        Mockito.when(fireRepository.findById(1)).thenReturn(Optional.of(fire1));
+
+        fireService.closeFire(1);
+
+        assertEquals(FireStatus.CLOSED, fire1.getStatus());
+        assertEquals(SirenStatus.PEACE, siren.getStatus());
+        Mockito.verify(fireRepository, times(1)).save(fire1);
+    }
+
+
 
     @Test
     void calculateDistanceKM() {

@@ -75,7 +75,6 @@ public class FireServiceImpl implements FireService {
 
         fireRepository.save(fire);
 
-
     }
 
     @Override
