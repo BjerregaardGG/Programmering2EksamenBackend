@@ -35,6 +35,14 @@ public class SirenDTO {
         this.lastActivated = model.getLastActivated();
     }
 
+    public SirenDTO(String name, double latitude, double longitude, SirenStatus status, boolean disabled) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.status = status;
+        this.disabled = disabled;
+    }
+
     public int getId() {
         return id;
     }

@@ -124,7 +124,7 @@ public class FireServiceImpl implements FireService {
     }
 
     // Hjælpemetode til at beregne afstand mellem to koordinater
-    private double calculateDistanceKM(double lat1, double lon1, double lat2, double lon2) {
+    double calculateDistanceKM(double lat1, double lon1, double lat2, double lon2) {
         double lat1Rad = Math.toRadians(lat1);
         double lon1Rad = Math.toRadians(lon1);
         double lat2Rad = Math.toRadians(lat2);
