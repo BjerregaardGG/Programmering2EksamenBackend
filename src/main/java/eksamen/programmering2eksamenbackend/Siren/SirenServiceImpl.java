@@ -19,10 +19,14 @@ public class SirenServiceImpl implements SirenService {
     @Autowired
     FireRepository fireRepository;
 
+    // finder alle sirener og konverterer til DTO'er
     @Override
     public List<SirenDTO> findAllSirens() {
+
+        // henter alle sirener
         List<SirenModel> sirenEntities = sirenRepository.findAll();
 
+        // konverterer til DTO'er
         List<SirenDTO> dtos = new ArrayList<>();
         for (SirenModel siren : sirenEntities) {
             SirenDTO dto = new SirenDTO();
@@ -39,11 +43,15 @@ public class SirenServiceImpl implements SirenService {
         return dtos;
     }
 
+    // finder sirener baseret på id
     @Override
     public SirenDTO findSirenById(int id) {
+
+        // henter en specifik sirene på ID
         SirenModel siren = sirenRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Siren not found"));
 
+        // konverterer sirenen til en DTO
         SirenDTO sirenDTO = new SirenDTO();
         sirenDTO.setId(siren.getId());
         sirenDTO.setName(siren.getName());
@@ -57,6 +65,7 @@ public class SirenServiceImpl implements SirenService {
 
     }
 
+    // opretter en ny sirene
     @Override
     public SirenDTO createSiren(SirenDTO sirenDTO) {
 
@@ -65,7 +74,7 @@ public class SirenServiceImpl implements SirenService {
             sirenDTO.setLastActivated(LocalDateTime.now());
         }
 
-        // gem SireModel ud fra sirenDTO værdier
+        // gemmer SirenModel ud fra sirenDTO værdier
         SirenModel siren = new SirenModel();
         siren.setName(sirenDTO.getName());
         siren.setLatitude(sirenDTO.getLatitude());
@@ -74,7 +83,7 @@ public class SirenServiceImpl implements SirenService {
         siren.setDisabled(sirenDTO.isDisabled());
         siren.setLastActivated(sirenDTO.getLastActivated());
 
-        // gem SirenModel i database og gem det nye objekt
+        // gemmer SirenModel i database og gemmer det nye objekt til returnering
         SirenModel newSiren = sirenRepository.save(siren);
 
         // returner (konverter) en ny SirenDto ud fra det nye SirenModel objekt
@@ -82,18 +91,21 @@ public class SirenServiceImpl implements SirenService {
 
     }
 
+    // opdaterer en sirene ud fra id og SirenDTO
     @Override
     public SirenDTO updateSiren(int id, SirenDTO sirenDTO) {
 
         SirenModel siren = sirenRepository.findById(sirenDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Siren not found with id" + id));
 
+        // håndterer null værdier
         if (sirenDTO.getName() != null) {
             siren.setName(sirenDTO.getName());
         }
         siren.setLatitude(sirenDTO.getLatitude());
         siren.setLongitude(sirenDTO.getLongitude());
 
+        // håndterer null værdier
         if (sirenDTO.getStatus() != null) {
             siren.setStatus(sirenDTO.getStatus());
         }
@@ -101,11 +113,13 @@ public class SirenServiceImpl implements SirenService {
         siren.setDisabled(sirenDTO.isDisabled());
         siren.setLastActivated(sirenDTO.getLastActivated());
 
+        // gemmer SirenModel i database og gemmer det nye objekt til returnering
         SirenModel updatedSiren = sirenRepository.save(siren);
         return new SirenDTO(updatedSiren);
 
     }
 
+    // sletter en sirene på ID
     @Override
     public void deleteSiren(int id) {
         SirenModel siren = sirenRepository.findById(id)
@@ -120,12 +134,15 @@ public class SirenServiceImpl implements SirenService {
         sirenRepository.deleteById(id);
     }
 
-    // sætter sirene statussen baseseret på fire status
+    // sætter sirene statussen til ALARM for fire
     public void activateSirensForFire(FireModel fire) {
+
+        // henter alle sirener for den specifikke fire
         List<SirenModel> sirens = fire.getSirens();
         for (SirenModel siren : sirens) {
-            siren.setStatus(SirenStatus.ALARM);
+            siren.setStatus(SirenStatus.ALARM); // sætter alarmerne til
         }
+
         sirenRepository.saveAll(sirens);
     }
 

@@ -39,6 +39,7 @@ class FireServiceImplTest {
     private FireModel fire1 = new FireModel();
     private SirenModel siren = new SirenModel();
 
+    // dummy data
     @BeforeEach
     void setUp(){
 
@@ -66,6 +67,7 @@ class FireServiceImplTest {
 
     }
 
+    // tester om findActiveFires finder fires med ACTIVE
     @Test
     void findActiveFires() {
 
@@ -78,6 +80,7 @@ class FireServiceImplTest {
         Mockito.verify(fireRepository, times(1)).findByStatus(FireStatus.ACTIVE);
     }
 
+    // tester om closeFire() slukker en brand og validerer fire- og sirenestatus
     @Test
     public void closeFire(){
 
@@ -90,8 +93,7 @@ class FireServiceImplTest {
         Mockito.verify(fireRepository, times(1)).save(fire1);
     }
 
-
-
+    // tester hjælpemetode ud fra forskellige værdier
     @Test
     void calculateDistanceKM() {
 

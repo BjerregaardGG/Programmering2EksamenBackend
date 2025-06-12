@@ -34,16 +34,16 @@ public class InitData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // Testdata: 10 sirener i og omkring Santa Monica / Pacific Palisades
-        SirenModel s1 = sirenRepository.save(new SirenModel("Santa Monica Pier", 34.0194, -118.4912, SirenStatus.PEACE, false));
-        SirenModel s2 = sirenRepository.save(new SirenModel("Venice Beach", 34.0218, -118.4815, SirenStatus.PEACE, false));
-        SirenModel s3 = sirenRepository.save(new SirenModel("Pacific Palisades Center", 34.0522, -118.5270, SirenStatus.PEACE, false));
-        SirenModel s4 = sirenRepository.save(new SirenModel("Malibu Creek", 34.0259, -118.6081, SirenStatus.PEACE, false));
-        SirenModel s5 = sirenRepository.save(new SirenModel("Topanga Beach", 34.0364, -118.5847, SirenStatus.PEACE, false));
-        SirenModel s6 = sirenRepository.save(new SirenModel("Will Rogers Beach", 34.0386, -118.5128, SirenStatus.PEACE, false));
-        SirenModel s7 = sirenRepository.save(new SirenModel("Manhattan Beach Pier", 33.8847, -118.4109, SirenStatus.PEACE, false));
-        SirenModel s8 = sirenRepository.save(new SirenModel("Hermosa Beach", 33.8622, -118.3992, SirenStatus.PEACE, false));
-        SirenModel s9 = sirenRepository.save(new SirenModel("Redondo Beach", 33.8492, -118.3892, SirenStatus.PEACE, false));
-        SirenModel s10 = sirenRepository.save(new SirenModel("El Segundo", 33.9192, -118.4165, SirenStatus.PEACE, false));
+        SirenModel s1 = sirenRepository.save(new SirenModel("Santa Monica Pier", 34.0194, -118.4912, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 10, 0)));
+        SirenModel s2 = sirenRepository.save(new SirenModel("Venice Beach", 34.0218, -118.4815, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 10, 15)));
+        SirenModel s3 = sirenRepository.save(new SirenModel("Pacific Palisades Center", 34.0522, -118.5270, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 10, 30)));
+        SirenModel s4 = sirenRepository.save(new SirenModel("Malibu Creek", 34.0259, -118.6081, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 10, 45)));
+        SirenModel s5 = sirenRepository.save(new SirenModel("Topanga Beach", 34.0364, -118.5847, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 11, 0)));
+        SirenModel s6 = sirenRepository.save(new SirenModel("Will Rogers Beach", 34.0386, -118.5128, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 11, 15)));
+        SirenModel s7 = sirenRepository.save(new SirenModel("Manhattan Beach Pier", 33.8847, -118.4109, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 11, 30)));
+        SirenModel s8 = sirenRepository.save(new SirenModel("Hermosa Beach", 33.8622, -118.3992, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 11, 45)));
+        SirenModel s9 = sirenRepository.save(new SirenModel("Redondo Beach", 33.8492, -118.3892, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 12, 0)));
+        SirenModel s10 = sirenRepository.save(new SirenModel("El Segundo", 33.9192, -118.4165, SirenStatus.PEACE, false, LocalDateTime.of(2025, 6, 12, 12, 15)));
 
         // Opret en brand ved Santa Monica
         FireModel fire1 = new FireModel();

@@ -24,6 +24,7 @@ public class SirenController {
         this.sirenServiceImpl = sirenServiceImpl;
     }
 
+    // GET til at hente alle sirener
     @GetMapping
     public ResponseEntity<List<SirenDTO>> getAllSirens(){
         try {
@@ -36,6 +37,7 @@ public class SirenController {
         }
     }
 
+    // GET til at hente sirener baseret på ID
     @GetMapping("/{id}")
     public ResponseEntity<SirenDTO> getSirenById(@PathVariable int id) {
         SirenDTO siren;
@@ -50,6 +52,7 @@ public class SirenController {
         }
     }
 
+    // POST til at oprette en ny sirene
     @PostMapping
     public ResponseEntity<SirenDTO> createSiren(@RequestBody SirenDTO siren){
         try {
@@ -63,6 +66,7 @@ public class SirenController {
 
     }
 
+    // PUT til at opdatere en sirene
     @PutMapping("/{id}")
     public ResponseEntity<SirenDTO> updateSiren (@PathVariable int id, @RequestBody SirenDTO sirenDTO) {
 
@@ -78,6 +82,7 @@ public class SirenController {
         }
     }
 
+    // DELETE til at slette en sirene
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSiren (@PathVariable int id) {
         try {
