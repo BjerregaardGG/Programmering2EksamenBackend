@@ -25,6 +25,16 @@ public class SirenDTO {
         this.lastActivated = lastActivated;
     }
 
+    public SirenDTO(SirenModel model) {
+        this.id = model.getId();
+        this.name = model.getName();
+        this.latitude = model.getLatitude();
+        this.longitude = model.getLongitude();
+        this.status = model.getStatus();
+        this.disabled = model.isDisabled();
+        this.lastActivated = model.getLastActivated();
+    }
+
     public int getId() {
         return id;
     }

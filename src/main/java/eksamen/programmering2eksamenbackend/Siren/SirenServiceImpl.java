@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,17 +41,69 @@ public class SirenServiceImpl implements SirenService {
 
     @Override
     public SirenDTO findSirenById(int id) {
-        return null;
+        SirenModel siren = sirenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Siren not found"));
+
+        SirenDTO sirenDTO = new SirenDTO();
+        sirenDTO.setId(siren.getId());
+        sirenDTO.setName(siren.getName());
+        sirenDTO.setLatitude(siren.getLatitude());
+        sirenDTO.setLongitude(siren.getLongitude());
+        sirenDTO.setStatus(siren.getStatus());
+        sirenDTO.setDisabled(siren.isDisabled());
+        sirenDTO.setLastActivated(siren.getLastActivated());
+
+        return sirenDTO;
+
     }
 
     @Override
     public SirenDTO createSiren(SirenDTO sirenDTO) {
-        return null;
+
+        // Sæt default værdier hvis de ikke er sat
+        if (sirenDTO.getLastActivated() == null) {
+            sirenDTO.setLastActivated(LocalDateTime.now());
+        }
+
+        // gem SireModel ud fra sirenDTO værdier
+        SirenModel siren = new SirenModel();
+        siren.setName(sirenDTO.getName());
+        siren.setLatitude(sirenDTO.getLatitude());
+        siren.setLongitude(sirenDTO.getLongitude());
+        siren.setStatus(sirenDTO.getStatus());
+        siren.setDisabled(sirenDTO.isDisabled());
+        siren.setLastActivated(sirenDTO.getLastActivated());
+
+        // gem SirenModel i database og gem det nye objekt
+        SirenModel newSiren = sirenRepository.save(siren);
+
+        // returner (konverter) en ny SirenDto ud fra det nye SirenModel objekt
+        return new SirenDTO(newSiren);
+
     }
 
     @Override
     public SirenDTO updateSiren(int id, SirenDTO sirenDTO) {
-        return null;
+
+        SirenModel siren = sirenRepository.findById(sirenDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Siren not found with id" + id));
+
+        if (sirenDTO.getName() != null) {
+            siren.setName(sirenDTO.getName());
+        }
+        siren.setLatitude(sirenDTO.getLatitude());
+        siren.setLongitude(sirenDTO.getLongitude());
+
+        if (sirenDTO.getStatus() != null) {
+            siren.setStatus(sirenDTO.getStatus());
+        }
+
+        siren.setDisabled(sirenDTO.isDisabled());
+        siren.setLastActivated(sirenDTO.getLastActivated());
+
+        SirenModel updatedSiren = sirenRepository.save(siren);
+        return new SirenDTO(updatedSiren);
+
     }
 
     @Override
