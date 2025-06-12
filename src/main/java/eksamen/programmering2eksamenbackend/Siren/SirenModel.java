@@ -38,6 +38,15 @@ public class SirenModel {
         this.disabled = false;
     }
 
+    public SirenModel(String name, double latitude, double longitude, SirenStatus status, boolean disabled, LocalDateTime lastActivated) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.status = status;
+        this.disabled = disabled;
+        this.lastActivated = lastActivated;
+    }
+
     public int getId() {
         return id;
     }

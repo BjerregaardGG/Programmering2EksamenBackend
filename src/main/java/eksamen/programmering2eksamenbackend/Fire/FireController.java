@@ -21,8 +21,9 @@ public class FireController {
         this.fireService = fireService;
     }
 
+    // GET til at finde fires baseret på status
     @GetMapping("")
-    public ResponseEntity<List<FireDTO>> getActiveFires(@RequestParam(required = false) String status){
+    public ResponseEntity<List<FireDTO>> getFiresBasedOnStatus(@RequestParam(required = false) String status){
         try {
             List<FireDTO> fires;
 
@@ -41,9 +42,11 @@ public class FireController {
         }
     }
 
+    // POST til at oprette en fire
    @PostMapping
    public ResponseEntity<FireDTO> createFire(@RequestBody FireDTO fire) {
        try {
+           // reporter fire ud fra længde og breddegrad
            FireDTO fireDTO = fireService.reportFire(fire.getLatitude(), fire.getLongitude());
 
            return ResponseEntity.ok(fireDTO);
@@ -54,8 +57,7 @@ public class FireController {
        }
    }
 
-
-
+   // PUT til at stoppe en fire
    @PutMapping("/{id}/closure")
    public ResponseEntity<Void> closeFire(@PathVariable int id){
         try{
