@@ -1,16 +1,12 @@
 package eksamen.programmering2eksamenbackend.Fire;
 
-import eksamen.programmering2eksamenbackend.Siren.SirenDTO;
-import eksamen.programmering2eksamenbackend.Siren.SirenModel;
-import eksamen.programmering2eksamenbackend.Siren.SirenRepository;
-import eksamen.programmering2eksamenbackend.Siren.SirenStatus;
+import eksamen.programmering2eksamenbackend.Siren.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,76 +19,34 @@ public class FireServiceImpl implements FireService {
     @Autowired
     private SirenRepository sirenRepository;
 
+    @Autowired
+    private FireMapper fireMapper;
+
     private static final int EARTH_RADIUS_KM = 6371;
 
-    public List<FireDTO> findAllFires(){
-        return null;
-    }
-
-    // finder aktive fires
+    // !ÆNDRING! finder aktive fires
     public List<FireDTO> findActiveFires(){
 
         // finder fires baseret på ACTIVE
         List<FireModel> fires = fireRepository.findByStatus(FireStatus.ACTIVE);
 
-        // omdanner til DTO'er
-        List<FireDTO> fireDtos = new ArrayList<>();
-        for (FireModel fire : fires) {
-            FireDTO dto = new FireDTO();
-            dto.setId(fire.getId());
-            dto.setLatitude(fire.getLatitude());
-            dto.setLongitude(fire.getLongitude());
-            dto.setStatus(fire.getStatus());
-            dto.setClosedAt(fire.getClosedAt());
-            dto.setReportedAt(fire.getReportedAt());
-
-
-            //Konverterer sirener til DTO'er
-            List<SirenDTO> sirenDTOs = fire.getSirens()
-                    .stream()
-                    .map(this::convertToSirenDTO)
-                    .collect(Collectors.toList());
-
-            dto.setActivatedSirens(sirenDTOs);
-            fireDtos.add(dto);
-        }
-
-        // returnerer til sidst fire DTO
-        return fireDtos;
-
+        // !ÆNDRING! kalder fireMapper til at konvertere fires til DTO
+        return fires.stream()
+                .map(fireMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    // finder closed fires
+    // !ÆNDRING! finder closed fires
     @Override
     public List<FireDTO> findClosedFires() {
 
         // finder fires baseret på status CLOSED
         List<FireModel> fires = fireRepository.findByStatus(FireStatus.CLOSED);
 
-        // omdanner til DTO'er
-        List<FireDTO> fireDtos = new ArrayList<>();
-        for (FireModel fire : fires) {
-            FireDTO dto = new FireDTO();
-            dto.setId(fire.getId());
-            dto.setLatitude(fire.getLatitude());
-            dto.setLongitude(fire.getLongitude());
-            dto.setStatus(fire.getStatus());
-            dto.setClosedAt(fire.getClosedAt());
-            dto.setReportedAt(fire.getReportedAt());
-
-
-            //Konverterer sirener til DTOs
-            List<SirenDTO> sirenDTOs = fire.getSirens()
-                    .stream()
-                    .map(this::convertToSirenDTO)
-                    .collect(Collectors.toList());
-
-            dto.setActivatedSirens(sirenDTOs);
-            fireDtos.add(dto);
-        }
-
-        return fireDtos;
-
+        // !ÆNDRING! kalder fireMapper til at konvertere fires til DTO
+        return fires.stream()
+                .map(fireMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // slukker en fire
@@ -107,14 +61,13 @@ public class FireServiceImpl implements FireService {
         fire.setStatus(FireStatus.CLOSED);
         fire.setClosedAt(LocalDateTime.now());
 
-        // ittererer over sirener for den specifikke fire om sætter dem til PEACE
-        List<SirenModel> sirens = fire.getSirens();
-        for(SirenModel s : sirens){
-            s.setStatus(SirenStatus.PEACE);
-            sirenRepository.save(s);
-        }
+        // !ÆNDRING! Opdater alle relaterede sirener med forEach
+        fire.getSirens().forEach(siren -> {
+            siren.setStatus(SirenStatus.PEACE);
+        });
 
         // gemmer til sidst fire i databasen
+        sirenRepository.saveAll(fire.getSirens());
         fireRepository.save(fire);
 
     }
@@ -150,7 +103,7 @@ public class FireServiceImpl implements FireService {
         sirenRepository.saveAll(availableSirens);  // Batch-opdatering efter ændringer i peek
         fire = fireRepository.save(fire);  // Opdater fire med relationer
 
-        return new FireDTO(fire);
+        return fireMapper.toDTO(fire);
 
     }
 
@@ -191,19 +144,4 @@ public class FireServiceImpl implements FireService {
         // ganger til sidst med jordens radius for at få km afstand
         return EARTH_RADIUS_KM * c;
     }
-
-    // hjælpemetode til at konvertere SireneModel til DTO
-    private SirenDTO convertToSirenDTO(SirenModel siren) {
-        SirenDTO dto = new SirenDTO();
-        dto.setId(siren.getId());
-        dto.setName(siren.getName());
-        dto.setLatitude(siren.getLatitude());
-        dto.setLongitude(siren.getLongitude());
-        dto.setStatus(siren.getStatus());
-        dto.setDisabled(siren.isDisabled());
-        dto.setLastActivated(siren.getLastActivated());
-        return dto;
-    }
-
-
 }

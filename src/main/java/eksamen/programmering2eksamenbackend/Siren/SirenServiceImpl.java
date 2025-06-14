@@ -7,43 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SirenServiceImpl implements SirenService {
 
     @Autowired
-    SirenRepository sirenRepository;
+    private SirenRepository sirenRepository;
 
     @Autowired
-    FireRepository fireRepository;
+    private FireRepository fireRepository;
 
-    // finder alle sirener og konverterer til DTO'er
+    @Autowired
+    private SirenMapper sirenMapper;
+
+    // !ÆNDRING! Finder alle sirener og konverterer til DTO'er
     @Override
     public List<SirenDTO> findAllSirens() {
 
         // henter alle sirener
-        List<SirenModel> sirenEntities = sirenRepository.findAll();
+        List<SirenModel> sirens = sirenRepository.findAll();
 
-        // konverterer til DTO'er
-        List<SirenDTO> dtos = new ArrayList<>();
-        for (SirenModel siren : sirenEntities) {
-            SirenDTO dto = new SirenDTO();
-            dto.setId(siren.getId());
-            dto.setName(siren.getName());
-            dto.setLatitude(siren.getLatitude());
-            dto.setLongitude(siren.getLongitude());
-            dto.setStatus(siren.getStatus());
-            dto.setDisabled(siren.isDisabled());
-            dto.setLastActivated(siren.getLastActivated());
-            dtos.add(dto);
-        }
-
-        return dtos;
+        // !ÆNDRING! kalder sirenMapper der konverterer til en liste af sirener
+        return sirenMapper.toDTOList(sirens);
     }
 
-    // finder sirener baseret på id
+    // !ÆNDRING! finder sirener baseret på id
     @Override
     public SirenDTO findSirenById(int id) {
 
@@ -51,17 +40,8 @@ public class SirenServiceImpl implements SirenService {
         SirenModel siren = sirenRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Siren not found"));
 
-        // konverterer sirenen til en DTO
-        SirenDTO sirenDTO = new SirenDTO();
-        sirenDTO.setId(siren.getId());
-        sirenDTO.setName(siren.getName());
-        sirenDTO.setLatitude(siren.getLatitude());
-        sirenDTO.setLongitude(siren.getLongitude());
-        sirenDTO.setStatus(siren.getStatus());
-        sirenDTO.setDisabled(siren.isDisabled());
-        sirenDTO.setLastActivated(siren.getLastActivated());
-
-        return sirenDTO;
+        // !ÆNDRING! kalder toDTO i sirenMapper
+        return sirenMapper.toDTO(siren);
 
     }
 
@@ -74,20 +54,13 @@ public class SirenServiceImpl implements SirenService {
             sirenDTO.setLastActivated(LocalDateTime.now());
         }
 
-        // gemmer SirenModel ud fra sirenDTO værdier
-        SirenModel siren = new SirenModel();
-        siren.setName(sirenDTO.getName());
-        siren.setLatitude(sirenDTO.getLatitude());
-        siren.setLongitude(sirenDTO.getLongitude());
-        siren.setStatus(sirenDTO.getStatus());
-        siren.setDisabled(sirenDTO.isDisabled());
-        siren.setLastActivated(sirenDTO.getLastActivated());
-
+        // !ÆNDRING! kalder toModel i sirenMapper
+        SirenModel siren =  sirenMapper.toModel(sirenDTO);
         // gemmer SirenModel i database og gemmer det nye objekt til returnering
         SirenModel newSiren = sirenRepository.save(siren);
 
-        // returner (konverter) en ny SirenDto ud fra det nye SirenModel objekt
-        return new SirenDTO(newSiren);
+        // !ÆNDRING! kalder toDto i sirenMapper
+        return sirenMapper.toDTO(newSiren);
 
     }
 
@@ -104,18 +77,16 @@ public class SirenServiceImpl implements SirenService {
         }
         siren.setLatitude(sirenDTO.getLatitude());
         siren.setLongitude(sirenDTO.getLongitude());
-
         // håndterer null værdier
         if (sirenDTO.getStatus() != null) {
             siren.setStatus(sirenDTO.getStatus());
         }
-
         siren.setDisabled(sirenDTO.isDisabled());
         siren.setLastActivated(sirenDTO.getLastActivated());
 
         // gemmer SirenModel i database og gemmer det nye objekt til returnering
         SirenModel updatedSiren = sirenRepository.save(siren);
-        return new SirenDTO(updatedSiren);
+        return sirenMapper.toDTO(updatedSiren);
 
     }
 
@@ -130,7 +101,6 @@ public class SirenServiceImpl implements SirenService {
             fire.getSirens().remove(siren);
             fireRepository.save(fire);
         }
-
         sirenRepository.deleteById(id);
     }
 
@@ -142,7 +112,6 @@ public class SirenServiceImpl implements SirenService {
         for (SirenModel siren : sirens) {
             siren.setStatus(SirenStatus.ALARM); // sætter alarmerne til
         }
-
         sirenRepository.saveAll(sirens);
     }
 

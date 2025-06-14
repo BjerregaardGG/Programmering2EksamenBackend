@@ -20,31 +20,6 @@ public class FireDTO {
 
     }
 
-    // konverterer et FireModel-objekt til et FireDTO-objekt
-    public FireDTO(FireModel fire) {
-        this.id = fire.getId();
-        this.latitude = fire.getLatitude();
-        this.longitude = fire.getLongitude();
-        this.reportedAt = fire.getReportedAt();
-        this.status = fire.getStatus();
-        this.closedAt = fire.getClosedAt();
-
-        // Konverterer listen af SirenModel til SirenDTO
-        this.activatedSirens = fire.getSirens().stream()
-                .map(SirenDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public FireDTO(int id, double latitude, double longitude, LocalDateTime reportedAt, FireStatus status, LocalDateTime closedAt, List<SirenDTO> activatedSirens) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.reportedAt = reportedAt;
-        this.status = status;
-        this.closedAt = closedAt;
-        this.activatedSirens = activatedSirens;
-    }
-
     public int getId() {
         return id;
     }
