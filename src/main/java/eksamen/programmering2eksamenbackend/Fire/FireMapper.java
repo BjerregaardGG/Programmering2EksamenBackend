@@ -2,6 +2,7 @@ package eksamen.programmering2eksamenbackend.Fire;
 
 import eksamen.programmering2eksamenbackend.Siren.SirenDTO;
 import eksamen.programmering2eksamenbackend.Siren.SirenMapper;
+import eksamen.programmering2eksamenbackend.Siren.SirenStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ public class FireMapper {
         // Konverter sirener med sirenMapper
         List<SirenDTO> sirenDTOs = model.getSirens()
                 .stream()
+                .filter(siren -> siren.getStatus() == SirenStatus.ALARM) // !ÆNDRING! viser aktive sirener og opdaterer frontend
                 .map(sirenMapper::toDTO)
                 .collect(Collectors.toList());
         dto.setActivatedSirens(sirenDTOs);

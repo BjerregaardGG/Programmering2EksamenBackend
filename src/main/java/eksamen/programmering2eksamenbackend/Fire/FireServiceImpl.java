@@ -97,6 +97,10 @@ public class FireServiceImpl implements FireService {
         // 5. opretter relationer hvis der er sirener (join tabel)
         if(!availableSirens.isEmpty()) {
             fire.getSirens().addAll(availableSirens);
+            // bidirektionel relation - derfor gemmer vi også på den anden side
+            for (SirenModel siren : availableSirens) {
+                siren.getFires().add(fire);
+            }
         }
 
         // 5. Gem alle ændringer
